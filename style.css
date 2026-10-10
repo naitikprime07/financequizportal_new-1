@@ -1142,8 +1142,8 @@ body .margin-top-20px{
   }
 
   .play-btn {
-    background: #ffb540;
-    color: white;
+    background: linear-gradient(145deg, #7c3aed, #4c1d95);
+    color: #f3e8ff;
     width: 55px;
     height: 55px;
     border-radius: 50%;
@@ -1153,7 +1153,7 @@ body .margin-top-20px{
     font-size: 24px;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45);
     flex-shrink: 0;
     position: relative;
   }
@@ -1163,7 +1163,7 @@ svg.play_icon{
 }
   .play-btn:hover {
     transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.65);
   }
 
   /* Responsive */
