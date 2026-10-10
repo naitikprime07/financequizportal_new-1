@@ -131,12 +131,14 @@
                 return false;
             }
 
-            console.log("[REWARD] ✔ Reward is ready! Showing popup...");
+            console.log("[REWARD] ✔ Reward is ready! Showing rewarded ad DIRECTLY (no button)...");
             popupShown = true;
-            createRewardPopup(function () {
-                console.log("[REWARD] ▶ User clicked 'Watch ad' — calling showRewardedFn()");
+            // Show the rewarded ad directly (auto popup), no custom button step.
+            try {
                 showRewardedFn();
-            });
+            } catch (err) {
+                console.error("[REWARD] ❌ Error showing rewarded ad:", err);
+            }
             return true;
         }
 
