@@ -18,7 +18,6 @@ window.adsKeys = {
     interstitial_001: "/21775744923/example/interstitial",
     anchor_001: "/21775744923/example/adaptive-banner",
     rewoarded_001: "/22639388115/rewarded_web_example",
-
 };
 
 console.log("[ADKEYS] ads-keys.js LOADED. Ad units:", JSON.stringify(window.adsKeys));
@@ -132,6 +131,38 @@ googletag.cmd.push(function () {
     });
 });
 /*-------------- End INTERSTITIAL ----------------------*/
+
+
+/*-------------- ANCHOR AD (Sticky Bottom Banner) -------------------*/
+/* Native GAM BOTTOM_ANCHOR behaviour:
+   - full expanded when the page first opens
+   - half-minimises as the user scrolls
+   - fully-minimised (small tab) after more scrolling
+   Must be defined BEFORE enableServices (ads-keys.js is in <head>). */
+let anchorAd = null;
+
+googletag.cmd.push(function () {
+    if (anchorAd) return;
+
+    anchorAd = googletag.defineOutOfPageSlot(
+        adsKeys.anchor_001,
+        googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
+    );
+
+    if (!anchorAd) {
+        console.error("[ANCHOR] ❌ Slot failed to create. Unit:", adsKeys.anchor_001);
+        return;
+    }
+
+    anchorAd.addService(googletag.pubads());
+    console.log("[ANCHOR] ✔ Bottom anchor defined BEFORE enableServices. Unit:", adsKeys.anchor_001);
+
+    googletag.pubads().addEventListener("slotRenderEnded", function (evt) {
+        if (evt.slot !== anchorAd) return;
+        console.log("[ANCHOR] Rendered. isEmpty:", evt.isEmpty);
+    });
+});
+/*-------------- End ANCHOR ----------------------*/
 
 
 var isRootOrIndexWithoutQuestionParam = () => {
