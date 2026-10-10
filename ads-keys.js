@@ -16,7 +16,7 @@ window.adsKeys = {
     display_002: "/6355419/Travel/Europe/France",
     display_003: "/6355419/Travel/Europe/France",
     interstitial_001: "/21775744923/example/interstitial",
-    anchor_001: "/21775744923/example/adaptive-banner",
+    anchor_001: "/21775744923/example",
     rewoarded_001: "/22639388115/rewarded_web_example",
 };
 
@@ -144,6 +144,12 @@ let anchorAd = null;
 googletag.cmd.push(function () {
     if (anchorAd) return;
 
+    // Anchor needs an explicit responsive size mapping or it returns empty.
+    var anchorMapping = googletag.sizeMapping()
+        .addSize([1024, 0], [[728, 90], [970, 90]])   // desktop
+        .addSize([0, 0], [[320, 50], [300, 50], [300, 100], [320, 100]]) // mobile
+        .build();
+
     anchorAd = googletag.defineOutOfPageSlot(
         adsKeys.anchor_001,
         googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
@@ -154,12 +160,12 @@ googletag.cmd.push(function () {
         return;
     }
 
-    anchorAd.addService(googletag.pubads());
+    anchorAd.addService(googletag.pubads()).defineSizeMapping(anchorMapping);
     console.log("[ANCHOR] ✔ Bottom anchor defined BEFORE enableServices. Unit:", adsKeys.anchor_001);
 
     googletag.pubads().addEventListener("slotRenderEnded", function (evt) {
         if (evt.slot !== anchorAd) return;
-        console.log("[ANCHOR] Rendered. isEmpty:", evt.isEmpty);
+        console.log("[ANCHOR] Rendered. isEmpty:", evt.isEmpty, ". If true → no fill / try Incognito or refresh.");
     });
 });
 /*-------------- End ANCHOR ----------------------*/
