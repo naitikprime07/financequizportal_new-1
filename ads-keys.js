@@ -17,7 +17,7 @@ window.adsKeys = {
     display_003: "/6355419/Travel/Europe/France",
     interstitial_001: "/21775744923/example/interstitial",
     anchor_001: "/21775744923/example/adaptive-banner",
-    rewoarded_001: "/21775744923/example/rewarded",
+    rewoarded_001: "/6499/example/rewarded",
 
 };
 
