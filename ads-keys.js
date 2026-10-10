@@ -141,6 +141,14 @@ googletag.cmd.push(function () {
    Must be defined BEFORE enableServices (ads-keys.js is in <head>). */
 let anchorAd = null;
 
+(function checkAnchorEnv() {
+    var w = window.innerWidth || document.documentElement.clientWidth;
+    var portrait = (window.innerHeight || 0) >= w;
+    var supported = (w >= 320 && w <= 1000);
+    console.log("[ANCHOR] Env check → width:", w + "px", "| portrait:", portrait, "| in 320-1000px range:", supported,
+        supported ? "" : "→ ANCHOR WILL NOT RENDER (Google only shows anchors in a portrait viewport 320-1000px wide). Use DevTools device mode or a phone.");
+})();
+
 googletag.cmd.push(function () {
     if (anchorAd) return;
 
@@ -156,7 +164,8 @@ googletag.cmd.push(function () {
     );
 
     if (!anchorAd) {
-        console.error("[ANCHOR] ❌ Slot failed to create. Unit:", adsKeys.anchor_001);
+        console.error("[ANCHOR] ❌ defineOutOfPageSlot returned null. Unit:", adsKeys.anchor_001,
+            "| Reason: viewport not supported (needs portrait, 320-1000px wide). TEST TIP: open in mobile/device mode, or append #gamBottomAnchorDemo to the URL to force a Google demo anchor.");
         return;
     }
 
@@ -167,6 +176,11 @@ googletag.cmd.push(function () {
         if (evt.slot !== anchorAd) return;
         console.log("[ANCHOR] Rendered. isEmpty:", evt.isEmpty, ". If true → no fill / try Incognito or refresh.");
     });
+
+    // TEST HINT: appending #gamBottomAnchorDemo to the URL makes Google force a demo anchor.
+    if (location.hash === '#gamBottomAnchorDemo') {
+        console.log("[ANCHOR] Demo hash detected (#gamBottomAnchorDemo) → Google will render a preview anchor ad.");
+    }
 });
 /*-------------- End ANCHOR ----------------------*/
 
