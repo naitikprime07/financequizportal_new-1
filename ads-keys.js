@@ -93,6 +93,47 @@ googletag.cmd.push(function () {
 /*-------------- End ----------------------*/
 
 
+/*-------------- INTERSTITIAL (MUST be defined BEFORE enableServices) -------------------*/
+/* Interstitials, like rewarded, are only evaluated at enableServices() time.
+   We show one only on pages reached via a quiz-option click (flag set in script.js). */
+let interstitialAd = null;
+
+googletag.cmd.push(function () {
+    var flag = '';
+    try { flag = sessionStorage.getItem('showInterOnNext'); } catch (e) { }
+
+    if (flag !== '1') {
+        console.log("[INTERSTITIAL] Flag not set → no interstitial on this page load.");
+        return;
+    }
+    try { sessionStorage.removeItem('showInterOnNext'); } catch (e) { }
+
+    interstitialAd = googletag.defineOutOfPageSlot(
+        adsKeys.interstitial_001,
+        googletag.enums.OutOfPageFormat.INTERSTITIAL
+    );
+
+    if (!interstitialAd) {
+        console.error("[INTERSTITIAL] ❌ Slot failed to create. Unit:", adsKeys.interstitial_001);
+        return;
+    }
+
+    interstitialAd.addService(googletag.pubads());
+    console.log("[INTERSTITIAL] ✔ Slot defined BEFORE enableServices. Unit:", adsKeys.interstitial_001);
+
+    googletag.pubads().addEventListener("interstitialSlotLoaded", function (evt) {
+        if (evt.slot !== interstitialAd) return;
+        console.log("[INTERSTITIAL] ✔ Ad loaded → auto-displaying now.");
+    });
+
+    googletag.pubads().addEventListener("interstitialSlotDismissed", function (evt) {
+        if (evt.slot !== interstitialAd) return;
+        console.log("[INTERSTITIAL] Dismissed by user.");
+    });
+});
+/*-------------- End INTERSTITIAL ----------------------*/
+
+
 var isRootOrIndexWithoutQuestionParam = () => {
     const { pathname, search } = window.location;
     const isCorrectPath =
@@ -126,63 +167,14 @@ function preloadReward() { /* rewarded slot defined at load time in head */ }
 
 
 /* ============================================================
-   INTERSTITIAL AD (on-demand, e.g. quiz option click)
-   Defined AFTER enableServices so it shows exactly when clicked.
-   Navigates to `url` after the ad is dismissed or a timeout.
+   TRIGGER INTERSTITIAL ON QUIZ OPTION CLICK
+   Sets a flag + navigates. The destination page's ads-keys.js
+   (loaded in <head>) reads the flag and defines the interstitial
+   BEFORE enableServices so GPT auto-shows it on arrival.
    ============================================================ */
-let interstitialShownThisPage = false;
-
 function showInterstitialAndGo(url) {
-    console.log("[INTERSTITIAL] showInterstitialAndGo() called. url:", url, "shownThisPage:", interstitialShownThisPage);
-
-    // Nothing to navigate to, or already shown this page → just go
+    console.log("[INTERSTITIAL] showInterstitialAndGo() called. url:", url);
     if (!url) return;
-    if (interstitialShownThisPage) {
-        console.log("[INTERSTITIAL] Already shown this page → navigating directly.");
-        window.location.href = url;
-        return;
-    }
-    interstitialShownThisPage = true;
-
-    window.googletag = window.googletag || { cmd: [] };
-
-    var navigated = false;
-    function go() {
-        if (navigated) return;
-        navigated = true;
-        console.log("[INTERSTITIAL] Navigating to:", url);
-        window.location.href = url;
-    }
-
-    googletag.cmd.push(function () {
-        try {
-            var iSlot = googletag.defineOutOfPageSlot(
-                adsKeys.interstitial_001,
-                googletag.enums.OutOfPageFormat.INTERSTITIAL
-            );
-
-            if (!iSlot) {
-                console.warn("[INTERSTITIAL] ❌ Slot failed to create → navigating directly.");
-                go();
-                return;
-            }
-
-            iSlot.addService(googletag.pubads());
-            console.log("[INTERSTITIAL] ✔ Slot defined with unit:", adsKeys.interstitial_001);
-
-            googletag.pubads().addEventListener("interstitialSlotLoaded", function (evt) {
-                if (evt.slot !== iSlot) return;
-                console.log("[INTERSTITIAL] ✔ Ad loaded & displayed.");
-            });
-
-            googletag.enableServices();
-
-            // Fallback: navigate after the ad has had time to be shown & dismissed
-            setTimeout(go, 4000);
-
-        } catch (err) {
-            console.error("[INTERSTITIAL] ❌ Error:", err);
-            go();
-        }
-    });
+    try { sessionStorage.setItem('showInterOnNext', '1'); } catch (e) { }
+    window.location.href = url;
 }
