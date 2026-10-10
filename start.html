@@ -203,7 +203,16 @@
       </div><!-- Overlay -->
       <div class="overlay" id="overlay"></div>
 
-      <!-- Top banner ad (ABOVE the header, matches financequizportal.com/start) -->
+      <!-- Top Bar -->
+      <header class="top-bar"><button class="menu-btn" id="menuBtn">☰</button>
+        <h1 class="logo" id="app-title">Quizwonz</h1>
+        <div class="coins">
+          +<span id="coin-count"><img src="small-coin.png"><span class="coin_set">200</span></span>
+        </div>
+
+      </header>
+
+      <!-- Top banner ad (BELOW the header) -->
       <div class="ads-container">
         <div class="tops-ads ads">
           <div id="global-ads-online-ads-wrap-1" class="custom-gpt-ad"></div>
@@ -222,15 +231,6 @@
         </div>
       </div>
 
-      <!-- Top Bar -->
-      <header class="top-bar"><button class="menu-btn" id="menuBtn">☰</button>
-        <h1 class="logo" id="app-title">Quizwonz</h1>
-        <div class="coins">
-          +<span id="coin-count"><img src="small-coin.png"><span class="coin_set">200</span></span>
-        </div>
-
-      </header>
-
 
 
 
@@ -245,25 +245,6 @@
               data-category="sports">SPORTS</button>
           </div>
         </div><button class="arrow right" id="scrollRight">❯</button>
-      </div>
-
-      <!-- Second banner ad (AFTER category bar, BEFORE quiz list) -->
-      <div class="ads-container">
-        <div class="tops-ads ads">
-          <div id="global-ads-online-ads-wrap-2" class="custom-gpt-ad"></div>
-          <script>
-            window.googletag = window.googletag || { cmd: [] };
-            googletag.cmd.push(function () {
-              googletag.defineSlot(adsKeys.display_002, [[336, 280], 'fluid', [300, 250]], 'global-ads-online-ads-wrap-2').addService(googletag.pubads());
-              googletag.pubads().enableSingleRequest();
-              googletag.enableServices();
-              googletag.display('global-ads-online-ads-wrap-2');
-            });
-          </script>
-          <div class="ads-label">
-            <span>Advertisement</span>
-          </div>
-        </div>
       </div>
 
       <!-- Quiz List -->
@@ -302,7 +283,23 @@
             </svg>
           </div>
         </a>
-        <!-- (mid-list ad moved up, after the category bar) -->
+        <div class="ads-container">
+          <div class="tops-ads ads">
+            <div id="global-ads-online-ads-wrap-2" class="custom-gpt-ad"></div>
+            <script>
+              window.googletag = window.googletag || { cmd: [] };
+              googletag.cmd.push(function () {
+                googletag.defineSlot(adsKeys.display_002, [[336, 280], 'fluid', [300, 250]], 'global-ads-online-ads-wrap-2').addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+                googletag.display('global-ads-online-ads-wrap-2');
+              });
+            </script>
+            <div class="ads-label">
+              <span>Advertisement</span>
+            </div>
+          </div>
+        </div>
         <a href="#" class="quiz-card play-quiz-start" data-category="sports">
           <div class="quiz-card-icon">⚽</div>
           <div class="details">
