@@ -114,65 +114,39 @@
     }
 
     if (rewardEnabled) {
+        // Wait for the preloaded reward (defined in ads-keys.js) then show popup
+        function tryShowReward() {
+            if (typeof isRewardReady === 'undefined' || !isRewardReady) return false;
+            if (typeof showRewardedFn !== 'function') return false;
+
+            createRewardPopup(function () {
+                showRewardedFn();
+            });
+            return true;
+        }
+
         const sessionChecker = setInterval(() => {
             var isActive = window.__sessionActive === true;
             var isInActive = window.__sessionInActive === true;
 
             if ((isActive || isInActive) && isRootOrIndexWithoutQuestionParam()) {
-                clearInterval(sessionChecker);
-
-                // Always show reward on page open
-                var shouldShow = true;
-
-                if (!shouldShow) {
-                    return;
+                // Session confirmed on first page: try to show reward
+                if (tryShowReward()) {
+                    clearInterval(sessionChecker);
                 }
-
-                console.log('Session state determined. Active:', isActive);
-
-                window.googletag = window.googletag || { cmd: [] };
-
-                googletag.cmd.push(function () {
-                    const rewardedSlot = googletag.defineOutOfPageSlot(
-                        window.adsKeys.rewoarded_001, // Replace with your GAM ad unit
-                        googletag.enums.OutOfPageFormat.REWARDED
-                    );
-
-                    if (!rewardedSlot) {
-                        console.log('Rewarded ads not supported on this device.');
-                        return;
-                    }
-
-                    rewardedSlot.addService(googletag.pubads());
-
-                    googletag.pubads().addEventListener(
-                        'rewardedSlotReady',
-                        function (event) {
-                            console.log('Rewarded ad ready.');
-                            createRewardPopup(function () {
-                                event.makeRewardedVisible();
-                            });
-                        }
-                    );
-
-                    googletag.pubads().addEventListener(
-                        'rewardedSlotGranted',
-                        function () {
-                            console.log('Reward granted.');
-                        }
-                    );
-
-                    googletag.pubads().addEventListener(
-                        'rewardedSlotClosed',
-                        function () {
-                            console.log('Rewarded ad closed.');
-                        }
-                    );
-
-                    googletag.enableServices();
-                    googletag.display(rewardedSlot);
-                });
             }
-        }, 1000);
+        }, 500);
+
+        // Also react instantly when GPT signals reward ready
+        window.addEventListener('gptRewardReady', function () {
+            var isActive = window.__sessionActive === true;
+            var isInActive = window.__sessionInActive === true;
+            if ((isActive || isInActive) && isRootOrIndexWithoutQuestionParam()) {
+                if (tryShowReward()) clearInterval(sessionChecker);
+            }
+        });
+
+        // Stop polling after 20s
+        setTimeout(() => clearInterval(sessionChecker), 20000);
     }
 })();

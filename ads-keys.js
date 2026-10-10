@@ -28,27 +28,47 @@ let pendingUrl = null;
 let showRewardedFn = null;
 
 
-/*-------------- OPean -------------------*/
+/*-------------- REWARDED SLOT (must be defined BEFORE enableServices) -------------------*/
+/* ads-keys.js loads synchronously in <head>, so this queues the rewarded slot
+   before any body inline banner script calls googletag.enableServices(). */
 
 window.googletag = window.googletag || { cmd: [] };
 
-let interstitialSlot;
-
 googletag.cmd.push(function () {
 
-    interstitialSlot = googletag.defineOutOfPageSlot(
-        adsKeys.interstitial_001,
-        googletag.enums.OutOfPageFormat.INTERSTITIAL
+    if (rewardedAd) return;
+
+    rewardedAd = googletag.defineOutOfPageSlot(
+        adsKeys.rewoarded_001,
+        googletag.enums.OutOfPageFormat.REWARDED
     );
 
-    if (interstitialSlot) {
-
-        interstitialSlot.addService(googletag.pubads());
-
-        googletag.pubads().enableSingleRequest();
-
-        googletag.enableServices();
+    if (!rewardedAd) {
+        console.warn("Rewarded slot failed to create.");
+        return;
     }
+
+    rewardedAd.addService(googletag.pubads());
+
+    /* READY EVENT – store makeRewardedVisible + notify listeners */
+    googletag.pubads().addEventListener("rewardedSlotReady", function (evt) {
+        if (evt.slot !== rewardedAd) return;
+        console.log("Reward Preloaded ✔");
+        isRewardReady = true;
+        showRewardedFn = evt.makeRewardedVisible;
+        // Notify google-reward.js / others that reward is available
+        try { window.dispatchEvent(new Event("gptRewardReady")); } catch (e) { }
+    });
+
+    /* CLOSE EVENT */
+    googletag.pubads().addEventListener("rewardedSlotClosed", function (evt) {
+        if (evt.slot !== rewardedAd) return;
+        console.log("Reward closed → navigating…");
+        if (pendingUrl) {
+            window.location.href = pendingUrl;
+            pendingUrl = null;
+        }
+    });
 
 });
 
@@ -64,111 +84,24 @@ var isRootOrIndexWithoutQuestionParam = () => {
     return isCorrectPath && hasNoQuestionParam;
 };
 
-/* ---------- PRELOAD REWARDED AD ---------- */
-function preloadReward() {
-    if (isRootOrIndexWithoutQuestionParam()) return;
-    window.googletag = window.googletag || { cmd: [] };
-
-    googletag.cmd.push(function () {
-        try {
-            // Avoid duplicate slot creation
-            if (rewardedAd) return;
-
-            rewardedAd = googletag.defineOutOfPageSlot(
-                adsKeys.rewoarded_001,
-                googletag.enums.OutOfPageFormat.REWARDED
-            );
-
-            if (!rewardedAd) {
-                console.warn("Rewarded slot failed to create.");
-                return;
-            }
-
-            rewardedAd.addService(googletag.pubads());
-
-            /* READY EVENT – The ONLY correct place to store makeRewardedVisible */
-            googletag.pubads().addEventListener("rewardedSlotReady", function (evt) {
-                if (evt.slot !== rewardedAd) return;
-
-                console.log("Reward Preloaded ✔");
-                isRewardReady = true;
-
-                // IMPORTANT: store original GPT callback
-                showRewardedFn = evt.makeRewardedVisible;
-            });
-
-            /* CLOSE EVENT */
-            googletag.pubads().addEventListener("rewardedSlotClosed", function (evt) {
-                if (evt.slot !== rewardedAd) return;
-
-                console.log("Reward closed → navigating…");
-
-                if (pendingUrl) {
-                    window.location.href = pendingUrl;
-                    pendingUrl = null;
-                }
-
-                cleanupReward();
-                preloadReward(); // preload next reward
-            });
-
-            googletag.enableServices();
-            googletag.display(rewardedAd);
-
-        } catch (err) {
-            console.error("Reward preload error:", err);
-        }
-    });
-}
-
-/* ---------- INSTANT SHOW WHEN USER CLICKS ---------- */
+/* ---------- SHOW REWARD WHEN USER CLICKS ---------- */
 function showRewardAndGo(url) {
     pendingUrl = url;
 
-    // reward is already preloaded & we have correct GPT show func
     if (isRewardReady && typeof showRewardedFn === "function") {
         console.log("Showing Reward Instantly ✔");
         try {
             showRewardedFn();
         } catch (err) {
             console.warn("Instant show error:", err);
-            window.location.href = url; // fallback
+            if (url) window.location.href = url; // fallback
         }
         return;
     }
 
     console.log("Reward NOT ready → redirecting instantly");
-    // window.location.href = url;
+    if (url) window.location.href = url;
 }
 
-/* ---------- CLEANUP AFTER CLOSE ---------- */
-function cleanupReward() {
-    try {
-        googletag.destroySlots([rewardedAd]);
-    } catch (err) { }
-
-    rewardedAd = null;
-    isRewardReady = false;
-    showRewardedFn = null;
-}
-
-/* ---------- ANCHOR AD (Sticky Bottom Banner) ---------- */
-let anchorSlot;
-
-googletag.cmd.push(function () {
-
-    anchorSlot = googletag.defineOutOfPageSlot(
-        adsKeys.anchor_001,
-        googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
-    );
-
-    if (anchorSlot) {
-        anchorSlot.addService(googletag.pubads());
-        googletag.pubads().enableSingleRequest();
-        googletag.enableServices();
-    }
-
-});
-
-/* ---------- START PRELOADING AUTOMATICALLY ---------- */
-document.addEventListener("DOMContentLoaded", preloadReward);
+/* ---------- START (no-op: slot already defined above) ---------- */
+function preloadReward() { /* rewarded slot defined at load time in head */ }
