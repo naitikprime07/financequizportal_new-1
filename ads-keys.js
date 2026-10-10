@@ -1,23 +1,13 @@
 
 /* ===== TEST AD UNIT CODES (Replace with real GAM ad units before going live) ===== */
-/*
- * GOOGLE TEST NETWORK: /6355414
- * These test units will serve sample/test ads from Google.
- * When ready for production, replace with your real GAM ad unit codes:
- *   display_001: "/23338698373/financequizhub_display_001"
- *   display_002: "/23338698373/financequizhub_display_002"
- *   display_003: "/23338698373/financequizhub_display_003"
- *   interstitial_001: "/23338698373/financequizhub_interstitial_001"
- *   anchor_001: "/23338698373/financequizhub_anchor_001"
- *   rewoarded_001: "/23338698373/financequizhub_rewarded_001"
- */
+
 window.adsKeys = {
-    display_001: "/21775744923/example/banner",
-    display_002: "/6355419/Travel/Europe/France",
-    display_003: "/6355419/Travel/Europe/France",
-    interstitial_001: "/21775744923/example/interstitial",
-    anchor_001: "/1234567/sports",
-    rewoarded_001: "/22639388115/rewarded_web_example",
+    display_001: "/23338698373/financequiznexa_display_001",
+    display_002: "/23338698373/financequiznexa_display_002",
+    display_003: "/23338698373/financequiznexa_display_003",
+    interstitial_001: "/23338698373/financequiznexa_interstitial_001",
+    anchor_001: "/23338698373/financequiznexa_anchor_001",
+    rewoarded_001: "/23338698373/financequiznexa_rewarded_001",
 };
 
 console.log("[ADKEYS] ads-keys.js LOADED. Ad units:", JSON.stringify(window.adsKeys));

@@ -33,8 +33,8 @@ const gadsids = {
 
 
 const quizData = [
-  { question: "Who starred in the movie 'Fight Club'?", options: ["Leonardo DiCaprio", "Brad Pitt", "Matt Damon", "Tom Cruise"], correct: "Brad Pitt" },
-  { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct: "Mars" },
+  { question: "Which financial metric equals a company's current assets minus its current liabilities?", options: ["Working capital", "Market capitalization", "Free cash flow", "Retained earnings"], correct: "Working capital" },
+  { question: "In investing, 'beta' is used to measure an asset's…?", options: ["Volatility relative to the market", "Dividend payout ratio", "Intrinsic book value", "Foreign exchange reserve"], correct: "Volatility relative to the market" },
 
 ];
 
