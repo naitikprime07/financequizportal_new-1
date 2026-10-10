@@ -92,25 +92,13 @@
       <div class="tops-ads ads">
         <div id="global-ads-online-ads-wrap-2" class="custom-gpt-ad"></div>
         <script>
-          (function () {
-            var s = document.currentScript;
-            var uri = window.location.pathname + window.location.search;
-            var isHomePage = (uri === '/' || uri === '/index.html' || uri === '/index.html');
-            if (isHomePage) {
-              // clean home URL: remove the block (matches PHP hiding it on '/')
-              var block = (s && s.closest) ? s.closest('.ads-container') : null;
-              if (block && block.parentNode) block.parentNode.removeChild(block);
-              return;
-            }
-            // has a query string (e.g. ?utm_source=...): show the ad, like PHP
-            window.googletag = window.googletag || { cmd: [] };
-            googletag.cmd.push(function () {
-              googletag.defineSlot(adsKeys.display_003, [[336, 280], 'fluid', [300, 250]], 'global-ads-online-ads-wrap-2').addService(googletag.pubads());
-              googletag.pubads().enableSingleRequest();
-              googletag.enableServices();
-              googletag.display('global-ads-online-ads-wrap-2');
-            });
-          })();
+          window.googletag = window.googletag || { cmd: [] };
+          googletag.cmd.push(function () {
+            googletag.defineSlot(adsKeys.display_003, [[336, 280], 'fluid', [300, 250]], 'global-ads-online-ads-wrap-2').addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+            googletag.display('global-ads-online-ads-wrap-2');
+          });
         </script>
         <div class="ads-label">
           <span>Advertisement</span>

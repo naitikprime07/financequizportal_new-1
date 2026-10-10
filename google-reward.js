@@ -121,22 +121,8 @@
             if ((isActive || isInActive) && isRootOrIndexWithoutQuestionParam()) {
                 clearInterval(sessionChecker);
 
-                var shouldShow = false;
-
-                if (isInActive) {
-                    var inactiveShown = localStorage.getItem('inactiveRewardShown') === 'true' || localStorage.getItem('rewardShown') === 'true';
-                    if (!inactiveShown) {
-                        shouldShow = true;
-                    }
-                } else if (isActive) {
-                    var activeVisitCount = parseInt(localStorage.getItem('activeVisitCount') || '0', 10);
-                    activeVisitCount++;
-                    localStorage.setItem('activeVisitCount', activeVisitCount);
-
-                    if (activeVisitCount % 3 === 1) {
-                        shouldShow = true;
-                    }
-                }
+                // Always show reward on page open
+                var shouldShow = true;
 
                 if (!shouldShow) {
                     return;
@@ -163,14 +149,9 @@
                         'rewardedSlotReady',
                         function (event) {
                             console.log('Rewarded ad ready.');
-                            if (isInActive) {
-                                createRewardPopup(function () {
-                                    event.makeRewardedVisible();
-                                    localStorage.setItem('inactiveRewardShown', 'true');
-                                });
-                            } else {
+                            createRewardPopup(function () {
                                 event.makeRewardedVisible();
-                            }
+                            });
                         }
                     );
 
