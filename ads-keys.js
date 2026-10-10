@@ -12,12 +12,12 @@
  *   rewoarded_001: "/23338698373/financequizhub_rewarded_001"
  */
 window.adsKeys = {
-    display_001: "/6355414/AP_PetPlatform_300x250",
-    display_002: "/6355414/AP_PetPlatform_300x250",
-    display_003: "/6355414/AP_PetPlatform_300x250",
-    interstitial_001: "/6355414/AP_PetPlatform_300x250",
-    anchor_001: "/6355414/AP_PetPlatform_300x250",
-    rewoarded_001: "/6355414/AP_PetPlatform_300x250",
+    display_001: "/21775744923/example/banner",
+    display_002: "/6355419/Travel/Europe/France",
+    display_003: "/6355419/Travel/Europe/France",
+    interstitial_001: "/21775744923/example/interstitial",
+    anchor_001: "/21775744923/example/adaptive-banner",
+    rewoarded_001: "/21775744923/example/rewarded",
 
 };
 
