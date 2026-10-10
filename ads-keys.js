@@ -21,6 +21,8 @@ window.adsKeys = {
 
 };
 
+console.log("[ADKEYS] ads-keys.js LOADED. Ad units:", JSON.stringify(window.adsKeys));
+
 
 let rewardedAd = null;
 let isRewardReady = false;
@@ -36,7 +38,12 @@ window.googletag = window.googletag || { cmd: [] };
 
 googletag.cmd.push(function () {
 
-    if (rewardedAd) return;
+    console.log("[GPT] Rewarded slot setup START...");
+
+    if (rewardedAd) {
+        console.log("[GPT] Rewarded slot already exists, skipping.");
+        return;
+    }
 
     rewardedAd = googletag.defineOutOfPageSlot(
         adsKeys.rewoarded_001,
@@ -44,31 +51,41 @@ googletag.cmd.push(function () {
     );
 
     if (!rewardedAd) {
-        console.warn("Rewarded slot failed to create.");
+        console.error("[GPT] ❌ Rewarded slot FAILED to create. Ad unit:", adsKeys.rewoarded_001);
         return;
     }
+
+    console.log("[GPT] ✔ Rewarded slot DEFINED with unit:", adsKeys.rewoarded_001);
 
     rewardedAd.addService(googletag.pubads());
 
     /* READY EVENT – store makeRewardedVisible + notify listeners */
     googletag.pubads().addEventListener("rewardedSlotReady", function (evt) {
         if (evt.slot !== rewardedAd) return;
-        console.log("Reward Preloaded ✔");
+        console.log("[GPT] ✔✔✔ rewardedSlotReady FIRED! Reward is ready to show.");
         isRewardReady = true;
         showRewardedFn = evt.makeRewardedVisible;
         // Notify google-reward.js / others that reward is available
         try { window.dispatchEvent(new Event("gptRewardReady")); } catch (e) { }
     });
 
+    /* IMPRESSION EVENT */
+    googletag.pubads().addEventListener("rewardedSlotGranted", function (evt) {
+        if (evt.slot !== rewardedAd) return;
+        console.log("[GPT] 🎁 rewardedSlotGranted — Reward given to user!");
+    });
+
     /* CLOSE EVENT */
     googletag.pubads().addEventListener("rewardedSlotClosed", function (evt) {
         if (evt.slot !== rewardedAd) return;
-        console.log("Reward closed → navigating…");
+        console.log("[GPT] Rewarded slot CLOSED.");
         if (pendingUrl) {
             window.location.href = pendingUrl;
             pendingUrl = null;
         }
     });
+
+    console.log("[GPT] Rewarded slot setup COMPLETE. Waiting for enableServices()...");
 
 });
 
@@ -86,20 +103,21 @@ var isRootOrIndexWithoutQuestionParam = () => {
 
 /* ---------- SHOW REWARD WHEN USER CLICKS ---------- */
 function showRewardAndGo(url) {
+    console.log("[GPT] showRewardAndGo() called. isRewardReady:", isRewardReady, "url:", url);
     pendingUrl = url;
 
     if (isRewardReady && typeof showRewardedFn === "function") {
-        console.log("Showing Reward Instantly ✔");
+        console.log("[GPT] ✔ Showing Reward instantly...");
         try {
             showRewardedFn();
         } catch (err) {
-            console.warn("Instant show error:", err);
-            if (url) window.location.href = url; // fallback
+            console.error("[GPT] ❌ Instant show error:", err);
+            if (url) window.location.href = url;
         }
         return;
     }
 
-    console.log("Reward NOT ready → redirecting instantly");
+    console.warn("[GPT] ⚠️ Reward NOT ready → redirecting directly.");
     if (url) window.location.href = url;
 }
 

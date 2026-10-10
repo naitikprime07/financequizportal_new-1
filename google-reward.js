@@ -1,5 +1,6 @@
 (function () {
     var rewardEnabled = true;
+    console.log("[REWARD] google-reward.js LOADED. pathname:", window.location.pathname, "search:", window.location.search);
     var isRootOrIndexWithoutQuestionParam = () => {
         const { pathname, search } = window.location;
         const isCorrectPath =
@@ -114,23 +115,44 @@
     }
 
     if (rewardEnabled) {
+        console.log("[REWARD] google-reward.js initialized. rewardEnabled=true");
+
+        var popupShown = false;
+
         // Wait for the preloaded reward (defined in ads-keys.js) then show popup
         function tryShowReward() {
-            if (typeof isRewardReady === 'undefined' || !isRewardReady) return false;
-            if (typeof showRewardedFn !== 'function') return false;
+            if (popupShown) return true;
 
+            var ready = (typeof isRewardReady !== 'undefined' && isRewardReady);
+            var hasFn = (typeof showRewardedFn === 'function');
+
+            if (!ready || !hasFn) {
+                console.log("[REWARD] Waiting... isRewardReady:", ready, "showRewardedFn exists:", hasFn);
+                return false;
+            }
+
+            console.log("[REWARD] ✔ Reward is ready! Showing popup...");
+            popupShown = true;
             createRewardPopup(function () {
+                console.log("[REWARD] ▶ User clicked 'Watch ad' — calling showRewardedFn()");
                 showRewardedFn();
             });
             return true;
         }
 
+        var pollCount = 0;
         const sessionChecker = setInterval(() => {
+            pollCount++;
             var isActive = window.__sessionActive === true;
             var isInActive = window.__sessionInActive === true;
+            var isRoot = isRootOrIndexWithoutQuestionParam();
 
-            if ((isActive || isInActive) && isRootOrIndexWithoutQuestionParam()) {
-                // Session confirmed on first page: try to show reward
+            if (pollCount % 10 === 1) {
+                console.log("[REWARD] Poll #" + pollCount, "| sessionActive:", isActive, "| sessionInActive:", isInActive, "| isRootPage:", isRoot);
+            }
+
+            if ((isActive || isInActive) && isRoot) {
+                console.log("[REWARD] ✔ Session + root page confirmed. Trying to show reward...");
                 if (tryShowReward()) {
                     clearInterval(sessionChecker);
                 }
@@ -139,14 +161,27 @@
 
         // Also react instantly when GPT signals reward ready
         window.addEventListener('gptRewardReady', function () {
+            console.log("[REWARD] 📢 gptRewardReady event received!");
             var isActive = window.__sessionActive === true;
             var isInActive = window.__sessionInActive === true;
-            if ((isActive || isInActive) && isRootOrIndexWithoutQuestionParam()) {
+            var isRoot = isRootOrIndexWithoutQuestionParam();
+
+            if ((isActive || isInActive) && isRoot) {
+                console.log("[REWARD] ✔ Conditions met. Showing reward...");
                 if (tryShowReward()) clearInterval(sessionChecker);
+            } else {
+                console.log("[REWARD] ⚠ gptRewardReady fired but conditions NOT met. isActive:", isActive, "isInActive:", isInActive, "isRoot:", isRoot);
             }
         });
 
         // Stop polling after 20s
-        setTimeout(() => clearInterval(sessionChecker), 20000);
+        setTimeout(() => {
+            if (!popupShown) {
+                console.warn("[REWARD] ❌ TIMEOUT (20s): Reward popup NEVER shown. Check logs above for reason.");
+            }
+            clearInterval(sessionChecker);
+        }, 20000);
+    } else {
+        console.log("[REWARD] ❌ rewardEnabled is FALSE. google-reward.js will NOT run.");
     }
 })();

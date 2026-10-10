@@ -95,6 +95,7 @@
 
     window.__sessionActive = active;
     window.__sessionInActive = !active;
+    console.log("[SESST] Session resolved. active:", active, "| token:", token ? token.substring(0, 20) + "..." : "NONE");
     return active;
   })();
 })();
