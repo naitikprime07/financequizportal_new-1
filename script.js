@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   const rootDomain = getRootDomain(window.location.href);
   const email = 'support@' + rootDomain;
-  const siteName = "Finance Quiz";
+  const siteName = rootDomain.charAt(0).toUpperCase() + rootDomain.slice(1);
   document.querySelectorAll('.domain-name').forEach(el => el.textContent = rootDomain);
   document.querySelectorAll('.domain-email').forEach(el => {
     el.textContent = email;
@@ -33,8 +33,8 @@ const gadsids = {
 
 
 const quizData = [
-  { question: "What does the term 'ROI' stand for in finance?", options: ["Return on Investment", "Rate of Interest", "Risk of Inflation", "Revenue over Income"], correct: "Return on Investment" },
-  { question: "Which institution is known as the 'lender of last resort' in the US?", options: ["Commercial Bank", "The Federal Reserve", "Investment Firm", "Credit Union"], correct: "The Federal Reserve" },
+  { question: "Who starred in the movie 'Fight Club'?", options: ["Leonardo DiCaprio", "Brad Pitt", "Matt Damon", "Tom Cruise"], correct: "Brad Pitt" },
+  { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct: "Mars" },
 
 ];
 
@@ -262,6 +262,7 @@ function claimReward() {
   resultContainer.classList.remove("hide-index");
   document.getElementById("rewardPopup").style.display = "none";
   document.getElementById("rewardPopup").remove();
+  showRewardAndGo('', 7);
   addCoins(100);
 
   /*  setTimeout(() => {
@@ -340,6 +341,7 @@ $(document).on("click", "#watchBtn", function () {
 document.querySelectorAll('.coins').forEach(element => {
   element.addEventListener('click', () => {
 
+    showRewardAndGo('', 3);
     setTimeout(() => {
       addCoins(20);
       updateCoinsDisplay(getCoins());
@@ -359,26 +361,36 @@ window.addEventListener("load", function() {
 * REWARDED AD – INSTANT OPEN WITH PROPER PRELOAD
 *****************************************************/
 let isPopupDisplayed = false;
+let gptPopupAdReady = false;
+
+// Listen for GPT slot render events to track popup ad status
+window.googletag = window.googletag || { cmd: [] };
+googletag.cmd.push(function () {
+  googletag.pubads().addEventListener('slotRenderEnded', function (event) {
+    var slotId = event.slot.getSlotElementId();
+    if (slotId === 'global-ads-popup-ad-wrap') {
+      gptPopupAdReady = !event.isEmpty;
+    }
+  });
+});
+
 function showAdAndNavigate(url, timer) {
-  if (url) {
-    window.location.href = url;
-  }
   const cadsPopup = document.getElementById("adsPopup");
+  if (!cadsPopup) {
+    if (url) window.location.href = url;
+    return;
+  }
 
+  // Check if GPT ad has rendered content inside popup slot
+  const adWrap = cadsPopup.querySelector('#global-ads-popup-ad-wrap');
+  const hasGptAd = adWrap && adWrap.querySelector('iframe');
 
-  const cadIns = cadsPopup.querySelector('ins.adsbygoogle');
-  const cadsstatus = cadIns.getAttribute('data-ad-status');
-
-  if (cadsstatus == 'filled') {
-    console.log('ok');
+  if (hasGptAd || gptPopupAdReady) {
+    console.log('GPT Popup ad filled');
     showAdPopup(url, timer);
   } else {
-    if (url) {
-      window.location.href = url;
-    }
-
+    if (url) { window.location.href = url; }
   }
-
 }
 /*
 function showAdPopupd(url,timerset) {
@@ -416,17 +428,21 @@ function showAdPopupd(url,timerset) {
     });
 }*/
 function showAdPopup(url, timeLeft) {
-  if (url) { window.location.href = url; }
   const adsPopup = document.getElementById("adsPopup");
   const closeAd = document.getElementById("closeAd");
-  const adTimer = document.getElementById("adTimer")
+  const adTimer = document.getElementById("adTimer");
 
-  const adIns = adsPopup.querySelector('ins.adsbygoogle');
-  const adsstatus = adIns.getAttribute('data-ad-status');
-
-  if (adsstatus != 'filled') {
+  if (!adsPopup) {
     if (url) { window.location.href = url; }
+    return;
+  }
 
+  // Check if GPT ad rendered inside popup
+  const adWrap = adsPopup.querySelector('#global-ads-popup-ad-wrap');
+  const hasGptAd = adWrap && adWrap.querySelector('iframe');
+
+  if (!hasGptAd && !gptPopupAdReady) {
+    if (url) { window.location.href = url; }
   } else {
     adsPopup.classList.add("active");
 
@@ -445,9 +461,8 @@ function showAdPopup(url, timeLeft) {
       }
     }, 1000);
   }
-  closeAd.addEventListener("click", () => {
+  closeAd.onclick = function() {
     adsPopup.classList.remove("active");
-
     if (url) { window.location.href = url; }
-  });
+  };
 }

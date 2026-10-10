@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Finance Quiz - Test Your Knowledge</title>
+  <title>QuizMaster - Test Your Knowledge</title>
 
 
 
 
 
+  <script async src="/adsess.js"></script>
 
 
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
@@ -21,31 +22,29 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <link rel="stylesheet" href="style.css">
+  <script src="ads-keys.js"></script>
 
 </head>
 
 <body>
-  <div id="pmx11">
-    <script async src="https://cdn.pubmonetx.com/inline-PMX1027-FQP.js"></script>
-  </div>
   <main class="container">
     <header class="header">
 
     </header>
     <div class="quiz-card" style="padding: 20px; text-align: left; line-height: 1.6;">
       <h2 style="color: #ffd700; margin-bottom: 20px; text-align: center;">Terms & Conditions</h2>
-      <p>Welcome to <span class="site-name">Finance Quiz</span>! These terms and conditions outline the rules and
-        regulations for the use of <span class="site-name">Finance Quiz</span>'s Website, located at <span
-          class="domain-name">financequizportal.com</span>.</p>
+      <p>Welcome to <span class="site-name">Our Site</span>! These terms and conditions outline the rules and
+        regulations for the use of <span class="site-name">Our Site</span>'s Website, located at <span
+          class="domain-name">ourwebsite.com</span>.</p>
       <br>
       <h3 style="color: #00d4ff;">1. Purely For Entertainment & No Rewards</h3>
-      <p><span class="site-name">Finance Quiz</span> is strictly an entertainment platform. <strong>We do not offer any real
+      <p><span class="site-name">Our Site</span> is strictly an entertainment platform. <strong>We do not offer any real
           money, prizes, gifts, or financial rewards.</strong> Any "coins", "scores", or "points" earned while playing
         our quizzes are purely virtual, exist only within the context of the website, and cannot be redeemed for
         real-world value.</p>
       <br>
       <h3 style="color: #00d4ff;">2. Advertisements</h3>
-      <p>Our website is supported by third-party advertisements. By using <span class="site-name">Finance Quiz</span>, you
+      <p>Our website is supported by third-party advertisements. By using <span class="site-name">Our Site</span>, you
         agree to the display of these advertisements during your quiz experience.</p>
       <br>
       <h3 style="color: #00d4ff;">3. Prohibited Conduct & Violence</h3>
@@ -55,7 +54,7 @@
       <br>
       <h3 style="color: #00d4ff;">4. Acceptance of Terms</h3>
       <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use <span
-          class="site-name">Finance Quiz</span> if you do not agree to take all of the terms and conditions stated on this
+          class="site-name">Our Site</span> if you do not agree to take all of the terms and conditions stated on this
         page.</p>
       <div style="text-align: center; margin-top: 30px;">
         <a href="/"
@@ -255,9 +254,17 @@
         </div>
         <div class="ads-container">
           <div class="tops-ads ads">
-
-
-            
+            <div id="global-ads-popup-ad-wrap" class="custom-gpt-ad"></div>
+            <script>
+              window.googletag = window.googletag || { cmd: [] };
+              googletag.cmd.push(function () {
+                googletag.defineSlot(adsKeys.display_001, [[336, 280], 'fluid', [300, 250]], 'global-ads-popup-ad-wrap').addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+                googletag.display('global-ads-popup-ad-wrap');
+              });
+            </script>
+            <div class="ads-label">Advertisement</div>
           </div>
         </div>
 

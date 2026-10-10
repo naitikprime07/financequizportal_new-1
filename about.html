@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Finance Quiz - Test Your Knowledge</title>
+  <title>QuizMaster - Test Your Knowledge</title>
 
 
 
 
 
+  <script async src="/adsess.js"></script>
 
 
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
@@ -21,23 +22,21 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <link rel="stylesheet" href="style.css">
+  <script src="ads-keys.js"></script>
 
 </head>
 
 <body>
-  <div id="pmx11">
-    <script async src="https://cdn.pubmonetx.com/inline-PMX1027-FQP.js"></script>
-  </div>
   <main class="container">
     <header class="header">
 
     </header>
     <div class="quiz-card" style="padding: 20px; text-align: left; line-height: 1.6;">
       <h2 style="color: #ffd700; margin-bottom: 20px; text-align: center;">About Us</h2>
-      <p>Welcome to <span class="site-name">Finance Quiz</span> - your number one source for testing your knowledge. We're
+      <p>Welcome to <span class="site-name">Our Site</span> - your number one source for testing your knowledge. We're
         dedicated to giving you the very best of quiz experiences, with a focus on fun, learning, and entertainment.</p>
       <br>
-      <p>Please note that <span class="site-name">Finance Quiz</span> is a purely entertainment-based platform. <strong>We
+      <p>Please note that <span class="site-name">Our Site</span> is a purely entertainment-based platform. <strong>We
           do not provide any real-money rewards, prizes, or financial incentives.</strong> Any coins or points earned
         during the quizzes are strictly for in-game progression and have no real-world value.</p>
       <br>
@@ -244,9 +243,17 @@
         </div>
         <div class="ads-container">
           <div class="tops-ads ads">
-
-
-            
+            <div id="global-ads-popup-ad-wrap" class="custom-gpt-ad"></div>
+            <script>
+              window.googletag = window.googletag || { cmd: [] };
+              googletag.cmd.push(function () {
+                googletag.defineSlot(adsKeys.display_001, [[336, 280], 'fluid', [300, 250]], 'global-ads-popup-ad-wrap').addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+                googletag.display('global-ads-popup-ad-wrap');
+              });
+            </script>
+            <div class="ads-label">Advertisement</div>
           </div>
         </div>
 

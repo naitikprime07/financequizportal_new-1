@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Finance Quiz - Test Your Knowledge</title>
+  <title>QuizMaster - Test Your Knowledge</title>
 
 
 
 
 
+  <script async src="/adsess.js"></script>
 
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,22 +21,20 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <link rel="stylesheet" href="style.css">
+  <script src="ads-keys.js"></script>
 
 </head>
 
 <body>
-  <div id="pmx11">
-    <script async src="https://cdn.pubmonetx.com/inline-PMX1027-FQP.js"></script>
-  </div>
   <main class="container">
     <header class="header">
 
     </header>
     <div class="quiz-card" style="padding: 20px; text-align: left; line-height: 1.6;">
       <h2 style="color: #ffd700; margin-bottom: 20px; text-align: center;">Privacy Policy</h2>
-      <p>At <span class="site-name">Finance Quiz</span>, accessible from <span class="domain-name">financequizportal.com</span>,
+      <p>At <span class="site-name">Our Site</span>, accessible from <span class="domain-name">ourwebsite.com</span>,
         one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of
-        information that is collected and recorded by <span class="site-name">Finance Quiz</span> and how we use it.</p>
+        information that is collected and recorded by <span class="site-name">Our Site</span> and how we use it.</p>
       <br>
       <h3 style="color: #00d4ff;">Information We Collect</h3>
       <p>We may collect personal information such as your name, email address, and usage data when you register or play
@@ -367,9 +366,17 @@
         </div>
         <div class="ads-container">
           <div class="tops-ads ads">
-
-
-            
+            <div id="global-ads-popup-ad-wrap" class="custom-gpt-ad"></div>
+            <script>
+              window.googletag = window.googletag || { cmd: [] };
+              googletag.cmd.push(function () {
+                googletag.defineSlot(adsKeys.display_001, [[336, 280], 'fluid', [300, 250]], 'global-ads-popup-ad-wrap').addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+                googletag.display('global-ads-popup-ad-wrap');
+              });
+            </script>
+            <div class="ads-label">Advertisement</div>
           </div>
         </div>
 
