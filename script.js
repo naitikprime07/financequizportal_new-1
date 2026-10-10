@@ -103,6 +103,21 @@ function loadQuestion() {
       selectAnswer(option, el);
     });
 
+    // Intercept option click → show interstitial ad → then navigate
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var targetUrl = el.getAttribute('href');
+      console.log("[QUIZ] Option clicked. targetUrl:", targetUrl);
+      // small delay so the user sees correct/wrong highlight first
+      setTimeout(function () {
+        if (typeof showInterstitialAndGo === 'function') {
+          showInterstitialAndGo(targetUrl);
+        } else {
+          window.location.href = targetUrl;
+        }
+      }, 500);
+    });
+
     optionsContainer.appendChild(el);
   });
 

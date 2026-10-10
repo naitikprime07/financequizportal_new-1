@@ -123,3 +123,66 @@ function showRewardAndGo(url) {
 
 /* ---------- START (no-op: slot already defined above) ---------- */
 function preloadReward() { /* rewarded slot defined at load time in head */ }
+
+
+/* ============================================================
+   INTERSTITIAL AD (on-demand, e.g. quiz option click)
+   Defined AFTER enableServices so it shows exactly when clicked.
+   Navigates to `url` after the ad is dismissed or a timeout.
+   ============================================================ */
+let interstitialShownThisPage = false;
+
+function showInterstitialAndGo(url) {
+    console.log("[INTERSTITIAL] showInterstitialAndGo() called. url:", url, "shownThisPage:", interstitialShownThisPage);
+
+    // Nothing to navigate to, or already shown this page → just go
+    if (!url) return;
+    if (interstitialShownThisPage) {
+        console.log("[INTERSTITIAL] Already shown this page → navigating directly.");
+        window.location.href = url;
+        return;
+    }
+    interstitialShownThisPage = true;
+
+    window.googletag = window.googletag || { cmd: [] };
+
+    var navigated = false;
+    function go() {
+        if (navigated) return;
+        navigated = true;
+        console.log("[INTERSTITIAL] Navigating to:", url);
+        window.location.href = url;
+    }
+
+    googletag.cmd.push(function () {
+        try {
+            var iSlot = googletag.defineOutOfPageSlot(
+                adsKeys.interstitial_001,
+                googletag.enums.OutOfPageFormat.INTERSTITIAL
+            );
+
+            if (!iSlot) {
+                console.warn("[INTERSTITIAL] ❌ Slot failed to create → navigating directly.");
+                go();
+                return;
+            }
+
+            iSlot.addService(googletag.pubads());
+            console.log("[INTERSTITIAL] ✔ Slot defined with unit:", adsKeys.interstitial_001);
+
+            googletag.pubads().addEventListener("interstitialSlotLoaded", function (evt) {
+                if (evt.slot !== iSlot) return;
+                console.log("[INTERSTITIAL] ✔ Ad loaded & displayed.");
+            });
+
+            googletag.enableServices();
+
+            // Fallback: navigate after the ad has had time to be shown & dismissed
+            setTimeout(go, 4000);
+
+        } catch (err) {
+            console.error("[INTERSTITIAL] ❌ Error:", err);
+            go();
+        }
+    });
+}
